@@ -6,65 +6,103 @@
     <title>Uma Surpresa Especial | Forno 90</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #f4f1ea; --card: #ffffff; }
+        :root { --bg: #f4f1ea; --card: #ffffff; --accent: #d4a373; }
         body { margin: 0; background: var(--bg); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
         
-        /* Overlay de Início (Necessário para a música tocar) */
-        #overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 1s; }
-        .open-btn { padding: 15px 30px; border: 1px solid #333; background: none; cursor: pointer; font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px; transition: 0.3s; }
-        .open-btn:hover { background: #333; color: white; }
+        /* Overlay com o Presente */
+        #overlay { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: var(--bg); z-index: 100; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            cursor: pointer; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
 
-        .logo-top { width: 60px; margin-bottom: 20px; position: absolute; top: 40px; opacity: 0.7; }
+        /* Ícone do Presente Animado */
+        .gift-container {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 25px;
+            animation: pulse 1.5s infinite ease-in-out;
+            color: #333;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .instruction-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-style: italic;
+            color: #333;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .instruction-text span { font-size: 14px; font-family: 'Inter', sans-serif; font-style: normal; opacity: 0.6; display: block; margin-top: 10px; }
+
+        .logo-top { width: 60px; position: absolute; top: 40px; opacity: 0.8; }
 
         /* Estética Polaroid */
+        .polaroid-wrapper { display: flex; justify-content: center; align-items: center; width: 100%; }
         .polaroid { 
             background: var(--card); 
-            padding: 15px 15px 60px 15px; 
-            box-shadow: 0 15px 50px rgba(0,0,0,0.15); 
-            transform: rotate(-2deg); 
-            max-width: 320px; width: 90%;
-            opacity: 0; transition: 2s;
+            padding: 18px 18px 70px 18px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15); 
+            transform: rotate(-3deg) scale(0.8); 
+            max-width: 320px; width: 85%;
+            opacity: 0; transition: all 1.5s ease-out;
         }
-        .media-container { width: 100%; aspect-ratio: 1/1; background: #eee; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .media-container { width: 100%; aspect-ratio: 1/1; background: #f9f9f9; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 1px solid #eee; }
         .media-container img, .media-container video { width: 100%; height: 100%; object-fit: cover; }
         
         .caption { 
             font-family: 'Playfair Display', serif; 
-            font-style: italic; 
-            font-size: 18px; 
-            text-align: center; 
-            margin-top: 30px; 
-            color: #444;
-            line-height: 1.4;
+            font-style: italic; font-size: 18px; 
+            text-align: center; margin-top: 35px; color: #444;
         }
 
-        /* Música de fundo escondida */
         audio { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="overlay">
-        <button class="open-btn" onclick="startExperience()">Abrir Surpresa</button>
-    </div>
-
-    <img src="https://raw.githubusercontent.com/allanwendel1892-wq/mom_day/main/logo.png" class="logo-top">
-
-    <div class="polaroid" id="polaroid">
-        <div class="media-container" id="media-content">
-            </div>
-        <div class="caption">
-            "Para quem nos ensinou que o amor é o ingrediente principal de tudo."
+    <div id="overlay" onclick="startExperience()">
+        <div class="gift-container">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                <rect x="2" y="7" width="20" height="5"></rect>
+                <line x1="12" y1="22" x2="12" y2="7"></line>
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+            </svg>
+        </div>
+        <div class="instruction-text">
+            Sua surpresa está aqui!<br>
+            <span>Clique no presente para abrir</span>
         </div>
     </div>
 
-    <audio id="bg-music" loop>
-        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    <img src="COLE_AQUI_O_LINK_RAW_DA_SUA_LOGO" class="logo-top" alt="Forno 90">
+
+    <div class="polaroid-wrapper">
+        <div class="polaroid" id="polaroid">
+            <div class="media-container" id="media-content"></div>
+            <div class="caption">
+                "Para quem nos ensinou que o amor é o ingrediente principal de tudo."
+            </div>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop preload="auto">
+        <source src="COLE_AQUI_O_LINK_RAW_DA_SUA_MUSICA" type="audio/mpeg">
     </audio>
 
     <script>
+        // --- CONFIGURAÇÕES SUPABASE ---
         const SB_URL = 'https://modo-fila-supabase.znzrqn.easypanel.host';
-        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE'; 
 
         async function loadContent() {
             const id = window.location.pathname.split('/').filter(Boolean).pop();
@@ -73,12 +111,10 @@
             });
             const data = await res.json();
 
-            if (data[0]) {
+            if (data && data[0]) {
                 const container = document.getElementById('media-content');
                 const url = data[0].url_foto;
-                
-                // Checa se é vídeo ou imagem
-                if (url.includes('.mp4') || url.includes('.mov')) {
+                if (url.toLowerCase().match(/\.(mp4|mov|webm)$/)) {
                     container.innerHTML = `<video src="${url}" autoplay loop muted playsinline></video>`;
                 } else {
                     container.innerHTML = `<img src="${url}">`;
@@ -87,12 +123,17 @@
         }
 
         function startExperience() {
+            const music = document.getElementById('bg-music');
+            music.play().catch(e => console.log("Erro áudio:", e));
+
             document.getElementById('overlay').style.opacity = '0';
+            document.getElementById('overlay').style.transform = 'scale(1.2)';
+            
             setTimeout(() => { 
                 document.getElementById('overlay').style.display = 'none';
-                document.getElementById('polaroid').style.opacity = '1';
-                document.getElementById('polaroid').style.transform = 'rotate(0deg) scale(1.05)';
-                document.getElementById('bg-music').play();
+                const pol = document.getElementById('polaroid');
+                pol.style.opacity = '1';
+                pol.style.transform = 'rotate(0deg) scale(1.05)';
             }, 1000);
         }
 
