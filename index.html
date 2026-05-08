@@ -18,7 +18,7 @@
 <body>
     <div id="loading">Carregando...</div>
     <div class="card" id="content">
-        <img src="LINK_DA_SUA_LOGO_PNG" class="logo">
+        <img src="https://drive.google.com/file/d/1923D4RHFaxayFzWZOK31KAHiS8X-RxBB/view?usp=drive_link" class="logo">
         <div class="photo-frame"><img id="foto" src=""></div>
         <h1>"Para quem nos dá o mundo."</h1>
         <audio id="audio" controls></audio>
@@ -29,7 +29,7 @@
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
 
         async function load() {
-            const id = window.location.pathname.split('/').pop();
+            const id = window.location.pathname.split('/').filter(Boolean).pop();
             const res = await fetch(`${SB_URL}/rest/v1/campanha_maes?id_tag=eq.${id}`, {
                 headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
             });
