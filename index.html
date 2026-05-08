@@ -3,47 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uma Surpresa para Você</title>
+    <title>Uma Surpresa Especial | Forno 90</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background: #fafafa; color: #1a1a1a; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; text-align: center; padding: 20px; }
-        .card { max-width: 400px; width: 100%; opacity: 0; transform: translateY(20px); transition: all 1s ease; }
-        .photo-frame { width: 100%; aspect-ratio: 1/1; background: #eee; border-radius: 2px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.08); margin-bottom: 30px; border: 8px solid #fff; }
-        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
-        h1 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: normal; font-style: italic; color: #333; margin-bottom: 25px; }
-        audio { width: 100%; height: 40px; filter: invert(100%) hue-rotate(180deg) brightness(1.5); }
-        .logo { width: 60px; margin-bottom: 50px; opacity: 0.6; }
+        :root { --bg: #f4f1ea; --card: #ffffff; }
+        body { margin: 0; background: var(--bg); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        
+        /* Overlay de Início (Necessário para a música tocar) */
+        #overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 1s; }
+        .open-btn { padding: 15px 30px; border: 1px solid #333; background: none; cursor: pointer; font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px; transition: 0.3s; }
+        .open-btn:hover { background: #333; color: white; }
+
+        .logo-top { width: 60px; margin-bottom: 20px; position: absolute; top: 40px; opacity: 0.7; }
+
+        /* Estética Polaroid */
+        .polaroid { 
+            background: var(--card); 
+            padding: 15px 15px 60px 15px; 
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15); 
+            transform: rotate(-2deg); 
+            max-width: 320px; width: 90%;
+            opacity: 0; transition: 2s;
+        }
+        .media-container { width: 100%; aspect-ratio: 1/1; background: #eee; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .media-container img, .media-container video { width: 100%; height: 100%; object-fit: cover; }
+        
+        .caption { 
+            font-family: 'Playfair Display', serif; 
+            font-style: italic; 
+            font-size: 18px; 
+            text-align: center; 
+            margin-top: 30px; 
+            color: #444;
+            line-height: 1.4;
+        }
+
+        /* Música de fundo escondida */
+        audio { display: none; }
     </style>
 </head>
 <body>
-    <div id="loading">Carregando...</div>
-    <div class="card" id="content">
-        <img src="https://drive.google.com/file/d/1923D4RHFaxayFzWZOK31KAHiS8X-RxBB/view?usp=drive_link" class="logo">
-        <div class="photo-frame"><img id="foto" src=""></div>
-        <h1>"Para quem nos dá o mundo."</h1>
-        <audio id="audio" controls></audio>
+
+    <div id="overlay">
+        <button class="open-btn" onclick="startExperience()">Abrir Surpresa</button>
     </div>
+
+    <img src="https://raw.githubusercontent.com/allanwendel1892-wq/mom_day/main/logo.png" class="logo-top">
+
+    <div class="polaroid" id="polaroid">
+        <div class="media-container" id="media-content">
+            </div>
+        <div class="caption">
+            "Para quem nos ensinou que o amor é o ingrediente principal de tudo."
+        </div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const SB_URL = 'https://modo-fila-supabase.znzrqn.easypanel.host';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
 
-        async function load() {
+        async function loadContent() {
             const id = window.location.pathname.split('/').filter(Boolean).pop();
             const res = await fetch(`${SB_URL}/rest/v1/campanha_maes?id_tag=eq.${id}`, {
                 headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
             });
             const data = await res.json();
+
             if (data[0]) {
-                document.getElementById('foto').src = data[0].url_foto;
-                document.getElementById('audio').src = data[0].url_audio;
-                document.getElementById('loading').style.display = 'none';
-                const c = document.getElementById('content');
-                c.style.opacity = '1';
-                c.style.transform = 'translateY(0)';
+                const container = document.getElementById('media-content');
+                const url = data[0].url_foto;
+                
+                // Checa se é vídeo ou imagem
+                if (url.includes('.mp4') || url.includes('.mov')) {
+                    container.innerHTML = `<video src="${url}" autoplay loop muted playsinline></video>`;
+                } else {
+                    container.innerHTML = `<img src="${url}">`;
+                }
             }
         }
-        load();
+
+        function startExperience() {
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => { 
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('polaroid').style.opacity = '1';
+                document.getElementById('polaroid').style.transform = 'rotate(0deg) scale(1.05)';
+                document.getElementById('bg-music').play();
+            }, 1000);
+        }
+
+        loadContent();
     </script>
 </body>
 </html>
